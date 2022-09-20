@@ -4,7 +4,6 @@ if (navigator.geolocation) {
     (location) => {
       const long = location.coords.longitude;
       const latitude = location.coords.latitude;
-      console.log(location, long, latitude);
       getWeatherData(long, latitude);
       getForecastWeatherData(long, latitude);
     },
@@ -25,7 +24,7 @@ async function getForecastWeatherData(long, latitude) {
     }
     const dataForecast = await resultsForecast.json();
     handleHour(dataForecast);
-    console.log(dataForecast);
+    handleDays(dataForecast.list);
   } catch (error) {
     loader.textContent = error;
   }
@@ -44,7 +43,6 @@ async function getWeatherData(long, latitude) {
     console.log(data);
     populateMainInfo(data);
 
-    console.log(data.weather[0].description);
     loader.classList.add("fade-out");
   } catch (error) {
     loader.textContent = error;
@@ -82,6 +80,34 @@ function handleHour(dataForecast) {
     hourTempartures[index].textContent = `${Math.trunc(
       dataForecast.list[index].main.temp
     )}°`;
-    console.log(Math.trunc(dataForecast.list[index * 3].main.temp));
+  });
+}
+
+const weekDays = [
+  "lundi",
+  "mardi",
+  "mercredi",
+  "jeudi",
+  "vendredi",
+  "samedi",
+  "dimanche",
+];
+const currentDay = new Date().toLocaleDateString("fr-FR", { weekday: "long" });
+
+//Permet de couper le tableau depuis le jour d'aujoud'hui  + 1 pour ne pas avoir le nom du jour
+// .concat permet d'additionner plusieurs tableaux
+const forecastDays = weekDays
+  .slice(weekDays.indexOf(currentDay) + 1)
+  .concat(weekDays.slice(0, weekDays.indexOf(currentDay) + 1));
+// console.log(`Current day : ${currentDay} et orderedDays = ${orderedDays}`);
+
+const daysName = document.querySelectorAll(".day-name");
+const perDayTemperature = document.querySelectorAll(".day-temp");
+
+function handleDays(data) {
+  forecastDays.forEach((day, index) => {
+    daysName[index].textContent =
+      forecastDays[index].charAt(0).toUpperCase() +
+      forecastDays[index].slice(1, 3);
   });
 }
