@@ -106,7 +106,7 @@ h1 span {
   grid-template-columns: repeat(7, 1fr);
 }
 .day-forecast.active,
-.hour-forecas.active {
+.hour-forecast.active {
   display: grid;
 }
 .forecast-block {
