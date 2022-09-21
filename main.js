@@ -25,6 +25,7 @@ async function getForecastWeatherData(long, latitude) {
     const dataForecast = await resultsForecast.json();
     handleHour(dataForecast);
     handleDays(dataForecast.list);
+    console.log(dataForecast);
   } catch (error) {
     loader.textContent = error;
   }
@@ -40,7 +41,6 @@ async function getWeatherData(long, latitude) {
       throw new Error(`Erreur : ${results}`);
     }
     const data = await results.json();
-    console.log(data);
     populateMainInfo(data);
 
     loader.classList.add("fade-out");
@@ -109,5 +109,28 @@ function handleDays(data) {
     daysName[index].textContent =
       forecastDays[index].charAt(0).toUpperCase() +
       forecastDays[index].slice(1, 3);
+
+    perDayTemperature[index].textContent = `${Math.trunc(
+      data[index + 7].main.temp
+    )}°`;
   });
+}
+
+//Tabs
+
+const tabsBtns = [...document.querySelectorAll(".tabs button")];
+const tabsContent = [...document.querySelectorAll(".forecast")];
+console.log(tabsContent);
+tabsBtns.forEach((btn) => btn.addEventListener("click", handleTabs));
+
+function handleTabs(e) {
+  const indexToRemove = tabsBtns.findIndex((tab) =>
+    tab.classList.contains("active")
+  );
+  tabsBtns[indexToRemove].classList.remove("active");
+  tabsContent[indexToRemove].classList.remove("active");
+
+  const indexToShow = tabsBtns.indexOf(e.target);
+  tabsBtns[indexToShow].classList.add("active");
+  tabsContent[indexToShow].classList.add("active");
 }
